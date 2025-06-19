@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+asyncpg
+paho-mqtt
+python-jose[cryptography]
+bcrypt
