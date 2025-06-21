@@ -1,8 +1,8 @@
 <template>
   <div class="layout">
     <!-- Se aplica la clase "collapsed" según el valor de isSidebarCollapsed -->
-    <aside :class="{'sidebar': true, 'collapsed': isSidebarCollapsed}">
-      <!-- Se pasa el estado y la función de toggle a Sidebar -->
+    <aside :class="{ sidebar: true, collapsed: isSidebarCollapsed }">
+      <!-- Se pasa el estado y la función toggle al Sidebar -->
       <Sidebar :is-collapsed="isSidebarCollapsed" @toggleSidebar="toggleSidebar" />
     </aside>
     <main class="main-content">
@@ -34,17 +34,17 @@ function toggleSidebar() {
   transition: width 0.3s;
   width: 280px;
   flex-shrink: 0;
-  /* Hemos eliminado el fondo oscuro para dejarlo al Sidebar */
-  background: transparent;
+  background: transparent; /* El fondo del Sidebar se establecerá dentro del componente Sidebar */
   box-shadow: none;
   z-index: 10;
 }
 
-/* Cuando se colapsa el sidebar, se reduce considerablemente el ancho */
+/* Cuando se colapsa el sidebar, se reduce su ancho */
 .sidebar.collapsed {
   width: 80px;
 }
 
+/* El área principal se ajusta automáticamente gracias a flex */
 .main-content {
   flex: 1;
   padding: 1rem;

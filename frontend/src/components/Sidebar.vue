@@ -1,30 +1,32 @@
 <!-- src/components/Sidebar.vue -->
 <template>
-  <!-- Se agrega una clase dinámica para controlar el ancho del Sidebar -->
+  <!-- Se agrega una clase dinámica para ajustar el ancho según isCollapsed -->
   <div class="custom-sidebar" :class="{ collapsed: isCollapsed }">
     <div class="custom-sidebar-header">
-      <!-- Muestra el título completo o abreviado según el estado -->
-      <h1 class="sidebar-title" v-if="!isCollapsed">ANALÍTICA ENERGÉTICA</h1>
-      <h1 class="sidebar-title" v-else>AE</h1>
+      <!-- Se muestra el título completo o abreviado según el estado -->
+      <h1 class="sidebar-title" v-show="!isCollapsed">ANALÍTICA ENERGÉTICA</h1>
+      <h1 class="sidebar-title" v-show="isCollapsed">AE</h1>
     </div>
     <nav class="custom-sidebar-menu">
       <ul>
         <li v-for="(item, index) in menu" :key="index">
           <a :href="item.href ? item.href : '#'" class="menu-item">
             <i :class="item.icon"></i>
-            <!-- Se muestran los textos únicamente cuando está expandido -->
-            <span v-if="!isCollapsed" class="menu-title">{{ item.title }}</span>
+            <!-- Usamos v-show para que el texto se oculte en estado colapsado, pero siempre esté en el DOM -->
+            <span class="menu-title" v-show="!isCollapsed">{{ item.title }}</span>
           </a>
-          <!-- Submenú (solo visible cuando esté expandido) -->
-          <ul v-if="item.child && !isCollapsed" class="submenu">
+          <!-- Submenú: se renderiza siempre, pero se oculta cuando isCollapsed es true -->
+          <ul class="submenu" v-if="item.child" v-show="!isCollapsed">
             <li v-for="(child, cIndex) in item.child" :key="cIndex">
-              <a :href="child.href" class="submenu-item">{{ child.title }}</a>
+              <a :href="child.href" class="submenu-item">
+                {{ child.title }}
+              </a>
             </li>
           </ul>
         </li>
       </ul>
     </nav>
-    <!-- Botón para colapsar/expandir situado al final del Sidebar -->
+    <!-- Botón para colapsar/expandir en la parte inferior -->
     <div class="sidebar-footer">
       <button class="toggle-button" @click="$emit('toggleSidebar')">
         <i v-if="!isCollapsed" class="mdi mdi-chevron-left"></i>
@@ -38,7 +40,10 @@
 import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps({
-  isCollapsed: { type: Boolean, default: false }
+  isCollapsed: {
+    type: Boolean,
+    default: false
+  }
 })
 const emit = defineEmits(['toggleSidebar'])
 
@@ -62,7 +67,7 @@ const menu = [
 </script>
 
 <style scoped>
-/* Contenedor del Sidebar con transición en el ancho */
+/* Contenedor del Sidebar con transición de ancho */
 .custom-sidebar {
   background-color: #ffffff;
   border-radius: 8px;
@@ -76,12 +81,12 @@ const menu = [
   transition: width 0.3s ease;
 }
 
-/* Cuando está colapsado, se reduce el ancho a 80px */
+/* Cuando está colapsado, se reduce el ancho */
 .custom-sidebar.collapsed {
   width: 80px;
 }
 
-/* Header del Sidebar */
+/* Encabezado del Sidebar */
 .custom-sidebar-header {
   padding: 20px 16px;
   border-bottom: 1px solid #e0e0e0;
@@ -94,7 +99,7 @@ const menu = [
   color: #333;
 }
 
-/* Menú del Sidebar */
+/* Menú Principal */
 .custom-sidebar-menu {
   flex-grow: 1;
   padding: 0;
@@ -145,7 +150,7 @@ const menu = [
   background-color: #f9f9f9;
 }
 
-/* Footer: botón de colapsar/expandir */
+/* Footer: botón de colapso */
 .sidebar-footer {
   padding: 16px;
   text-align: center;
@@ -154,18 +159,18 @@ const menu = [
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 56px; /* Botón más grande */
+  height: 56px;
   border-radius: 50%;
   background-color: #007bff;
   color: #fff;
   border: none;
   cursor: pointer;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 .toggle-button:hover {
   background-color: #0056b3;
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 </style>
