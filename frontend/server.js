@@ -1,16 +1,20 @@
 // frontend/server.js
 const express = require('express')
 const path = require('path')
-const app = express()
 const history = require('connect-history-api-fallback')
 
-// Soporte para Vue Router en modo history
-app.use(history())
+const app = express()
+
+// Soporte para Vue Router en modo history (una sola vez)
+app.use(history({
+  disableDotRule: true,
+  verbose: true
+}))
 
 // Servir archivos estáticos desde dist/
 app.use(express.static(path.join(__dirname, 'dist')))
 
-// Enviar index.html para cualquier ruta no encontrada (SPA fallback)
+// Fallback para rutas no encontradas (innecesario si usamos history middleware)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'))
 })
