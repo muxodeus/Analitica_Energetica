@@ -1,0 +1,17 @@
+services:
+  airflow:
+    build:
+      context: ./cloud/airflow
+    container_name: airflow
+    ports:
+      - "8080:8080"
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://energia:energia@postgres:5432/energia
+      _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-postgres==5.5.0
+    volumes:
+      - ./cloud/airflow/dags:/opt/airflow/dags
+      - ./cloud/airflow/plugins:/opt/airflow/plugins
+    depends_on:
+      - postgres
