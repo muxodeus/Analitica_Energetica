@@ -1,36 +1,34 @@
-<!-- src/components/Sidebar.vue -->
 <template>
-  <!-- Se agrega una clase dinámica para controlar el ancho del Sidebar -->
-  <div class="custom-sidebar" :class="{ collapsed: isCollapsed }">
+  <div class="custom-sidebar">
     <div class="custom-sidebar-header">
-      <!-- Muestra el título completo o abreviado según el estado -->
+      <!-- Si no está colapsado se muestra el título completo; de lo contrario, una abreviación -->
       <h1 class="sidebar-title" v-if="!isCollapsed">ANALÍTICA ENERGÉTICA</h1>
       <h1 class="sidebar-title" v-else>AE</h1>
+      <!-- Botón para colapsar/expandir -->
+      <button class="toggle-button" @click="$emit('toggleSidebar')">
+        <i v-if="!isCollapsed" class="mdi mdi-chevron-left"></i>
+        <i v-else class="mdi mdi-chevron-right"></i>
+      </button>
     </div>
     <nav class="custom-sidebar-menu">
       <ul>
         <li v-for="(item, index) in menu" :key="index">
           <a :href="item.href ? item.href : '#'" class="menu-item">
             <i :class="item.icon"></i>
-            <!-- Se muestran los textos únicamente cuando está expandido -->
+            <!-- Sólo se muestran los títulos si el menú está expandido -->
             <span v-if="!isCollapsed" class="menu-title">{{ item.title }}</span>
           </a>
-          <!-- Submenú (solo visible cuando esté expandido) -->
+          <!-- Si el item tiene submenú y el menú está expandido, se muestran -->
           <ul v-if="item.child && !isCollapsed" class="submenu">
             <li v-for="(child, cIndex) in item.child" :key="cIndex">
-              <a :href="child.href" class="submenu-item">{{ child.title }}</a>
+              <a :href="child.href" class="submenu-item">
+                {{ child.title }}
+              </a>
             </li>
           </ul>
         </li>
       </ul>
     </nav>
-    <!-- Botón para colapsar/expandir situado al final del Sidebar -->
-    <div class="sidebar-footer">
-      <button class="toggle-button" @click="$emit('toggleSidebar')">
-        <i v-if="!isCollapsed" class="mdi mdi-chevron-left"></i>
-        <i v-else class="mdi mdi-chevron-right"></i>
-      </button>
-    </div>
   </div>
 </template>
 
@@ -38,7 +36,10 @@
 import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps({
-  isCollapsed: { type: Boolean, default: false }
+  isCollapsed: {
+    type: Boolean,
+    default: false
+  }
 })
 const emit = defineEmits(['toggleSidebar'])
 
@@ -62,7 +63,6 @@ const menu = [
 </script>
 
 <style scoped>
-/* Contenedor del Sidebar con transición en el ancho */
 .custom-sidebar {
   background-color: #ffffff;
   border-radius: 8px;
@@ -72,40 +72,45 @@ const menu = [
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  width: 280px;
-  transition: width 0.3s ease;
 }
 
-/* Cuando está colapsado, se reduce el ancho a 80px */
-.custom-sidebar.collapsed {
-  width: 80px;
-}
-
-/* Header del Sidebar */
+/* Encabezado del Sidebar */
 .custom-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 20px 16px;
   border-bottom: 1px solid #e0e0e0;
-  text-align: center;
   background-color: #f8f9fa;
 }
+
 .sidebar-title {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   margin: 0;
   color: #333;
 }
 
-/* Menú del Sidebar */
+.toggle-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #007bff;
+}
+
+/* Menú principal */
 .custom-sidebar-menu {
-  flex-grow: 1;
   padding: 0;
   margin: 0;
-  overflow-y: auto;
+  flex-grow: 1;
 }
+
 .custom-sidebar-menu ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
+
 .menu-item {
   display: flex;
   align-items: center;
@@ -114,25 +119,28 @@ const menu = [
   color: #333;
   transition: background-color 0.2s ease;
 }
+
 .menu-item:hover {
   background-color: #f0f0f0;
 }
+
 .menu-item i {
   font-size: 28px;
   margin-right: 10px;
   color: #007bff;
 }
+
 .menu-title {
   font-size: 1rem;
   font-weight: 500;
 }
 
-/* Submenú */
 .submenu {
   list-style: none;
   padding-left: 20px;
   margin: 5px 0;
 }
+
 .submenu-item {
   display: block;
   padding: 8px 16px;
@@ -141,31 +149,8 @@ const menu = [
   font-size: 0.9rem;
   border-radius: 4px;
 }
+
 .submenu-item:hover {
   background-color: #f9f9f9;
-}
-
-/* Footer: botón de colapsar/expandir */
-.sidebar-footer {
-  padding: 16px;
-  text-align: center;
-}
-.toggle-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 1.6rem;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-.toggle-button:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
 }
 </style>
