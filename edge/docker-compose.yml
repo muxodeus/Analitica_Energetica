@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    ports:
+      - "1883:1883"
+
+  edge-ingest:
+    build: ./edge-ingest
+    depends_on:
+      - mosquitto
+    environment:
+      MODBUS_HOST: "192.168.0.10"
+      MODBUS_PORT: 502
+      MQTT_BROKER: mosquitto
+      MQTT_TOPIC: energia/raw

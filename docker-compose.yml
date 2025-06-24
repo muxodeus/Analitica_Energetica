@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  simulator:
+    build:
+      context: ./simulator
+    ports:
+      - "1502:1502"
+
+  edge-ingest:
+    build: ./edge/edge-ingest
+    depends_on:
+      - simulator
+      - mosquitto
+    environment:
+      MODBUS_HOST: simulator
+      MODBUS_PORT: 1502
+      MQTT_BROKER: mosquitto
+      MQTT_TOPIC: energia/raw
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: energia
+      DB_PASS: energia
+      DB_NAME: energia
+      SECRET_KEY: supersecreta
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: energia
+      POSTGRES_PASSWORD: energia
+      POSTGRES_DB: energia
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
